@@ -1,0 +1,57 @@
+-- Migration Portal UniALFA
+CREATE DATABASE IF NOT EXISTS portal_estagios CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE portal_estagios;
+
+CREATE TABLE IF NOT EXISTS alunos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  ra VARCHAR(20) NOT NULL UNIQUE,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  senha_hash VARCHAR(255) NOT NULL DEFAULT 'provisorio',
+  apto TINYINT(1) NOT NULL DEFAULT 1,
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS empresas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  cnpj VARCHAR(18) NOT NULL UNIQUE,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  senha_hash VARCHAR(255) NOT NULL DEFAULT 'provisorio',
+  status ENUM('pendente','aprovada','bloqueada') DEFAULT 'pendente',
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS vagas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  empresa_id INT NOT NULL,
+  titulo VARCHAR(200) NOT NULL,
+  descricao TEXT,
+  area VARCHAR(100),
+  bolsa DECIMAL(10,2) DEFAULT 0,
+  ativa TINYINT(1) DEFAULT 1,
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS candidaturas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  aluno_id INT NOT NULL,
+  vaga_id INT NOT NULL,
+  status ENUM('enviada','em_analise','aprovada','reprovada') DEFAULT 'enviada',
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY unica (aluno_id, vaga_id),
+  FOREIGN KEY (aluno_id) REFERENCES alunos(id) ON DELETE CASCADE,
+  FOREIGN KEY (vaga_id) REFERENCES vagas(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS notificacoes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  aluno_id INT NOT NULL,
+  candidatura_id INT NOT NULL,
+  mensagem VARCHAR(255) NOT NULL,
+  lida TINYINT(1) DEFAULT 0,
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (aluno_id) REFERENCES alunos(id) ON DELETE CASCADE,
+  FOREIGN KEY (candidatura_id) REFERENCES candidaturas(id) ON DELETE CASCADE
+);
