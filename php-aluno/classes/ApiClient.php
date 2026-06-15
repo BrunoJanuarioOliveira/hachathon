@@ -2,7 +2,7 @@
 class ApiClient {
     private string $baseUrl;
 
-    public function __construct(string $baseUrl = 'http://localhost/hackatoon/api.php') {
+    public function __construct(string $baseUrl = 'http://localhost:8081/api.php') {
         $this->baseUrl = rtrim($baseUrl, '/');
 
         if (!function_exists('curl_version')) {

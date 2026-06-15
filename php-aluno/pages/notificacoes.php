@@ -7,7 +7,7 @@ if (empty($_SESSION['aluno_id'])) {
 
 require_once __DIR__ . '/../classes/ApiClient.php';
 
-$api = new ApiClient('http://localhost/hackatoon/api.php');
+$api = new ApiClient('localhost/hachathon-fixed/php-aluno/api.php');
 $erro = '';
 $notifs = [];
 

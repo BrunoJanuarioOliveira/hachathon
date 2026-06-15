@@ -6,9 +6,13 @@ import java.sql.SQLException;
 
 public class ConexaoBD {
 
-    private static final String URL  = "jdbc:mysql://localhost:3306/bolsa_de_valores?useSSL=false&serverTimezone=America/Sao_Paulo";
-    private static final String USER = "root";
-    private static final String PASS = "1395271g"; // ← troque pela sua senha
+    // Lê configurações de variáveis de ambiente; cai nos valores padrão se não definidas
+    private static final String DB_HOST = System.getenv().getOrDefault("DB_HOST", "localhost");
+    private static final String DB_NAME = System.getenv().getOrDefault("DB_NAME", "portal_estagios");
+    private static final String URL  = "jdbc:mysql://" + DB_HOST + ":3306/" + DB_NAME
+                                       + "?useSSL=false&serverTimezone=America/Sao_Paulo";
+    private static final String USER = System.getenv().getOrDefault("DB_USER", "root");
+    private static final String PASS = System.getenv().getOrDefault("DB_PASS", ""); // defina DB_PASS no ambiente
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);

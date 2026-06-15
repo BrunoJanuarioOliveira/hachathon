@@ -18,11 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = 'Preencha o RA para entrar.';
     } else {
         try {
-            $api = new ApiClient('http://localhost/hackatoon/api.php');
+            $api = new ApiClient('localhost/hachathon-fixed/php-aluno/api.php');
             $dados = $api->getAlunoPorRa($ra);
 
-            if (!empty($dados[0])) {
-                $aluno = new Aluno($dados[0]);
+            if (!empty($dados)) {
+                $aluno = new Aluno($dados);
                 if (!$aluno->isApto()) {
                     $erro = 'Acesso bloqueado. Contate a UniALFA.';
                 } else {
