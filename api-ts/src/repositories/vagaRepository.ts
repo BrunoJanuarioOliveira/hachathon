@@ -14,7 +14,7 @@ export async function listarAtivas(): Promise<Vaga[]> {
 
 export async function listarPorEmpresa(empresaId: number): Promise<Vaga[]> {
   const [rows] = await pool.query<RowDataPacket[]>(
-    'SELECT v.*, e.nome AS empresa_nome FROM vagas v JOIN empresas e ON e.id=v.empresa_id WHERE v.empresa_id=? ORDER BY v.criado_em DESC',
+    'SELECT v.*, e.nome AS empresa_nome FROM vagas v JOIN empresas e ON e.id=v.empresa_id WHERE v.empresa_id=? AND v.ativa=1 ORDER BY v.criado_em DESC',
     [empresaId]);
   return rows as Vaga[];
 }

@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/Entidade.php';
 
+
+
 class Vaga extends Entidade {
     private string $titulo;
     private string $empresaNome;
@@ -44,4 +46,6 @@ class Vaga extends Entidade {
     public function getResumo(): string {
         return $this->titulo . ' — ' . $this->empresaNome;
     }
+
+    
 }

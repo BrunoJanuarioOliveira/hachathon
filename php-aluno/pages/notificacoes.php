@@ -59,8 +59,8 @@ try {
         <?php else: ?>
             <?php foreach ($notifs as $n): ?>
                 <div class="card">
-                    <p><?php echo htmlspecialchars($n['texto']); ?></p>
-                    <p><strong>Status:</strong> <?php echo $n['lida'] ? 'Lida' : 'Nova'; ?></p>
+                    <p><?php echo htmlspecialchars($n['mensagem']); ?></p>
+                    <p><strong>Status:</strong> <?php echo $n['lida'] ? 'Enviada' : 'Respondida'; ?></p>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
