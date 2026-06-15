@@ -8,7 +8,7 @@ if (empty($_SESSION['aluno_id'])) {
 require_once __DIR__ . '/../classes/ApiClient.php';
 require_once __DIR__ . '/../classes/Vaga.php';
 
-$api = new ApiClient('localhost/hachathon-fixed/php-aluno/api.php');
+$api = new ApiClient();
 $erro = '';
 $mensagem = '';
 $vaga = null;
@@ -33,11 +33,22 @@ try {
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $res = $api->candidatar((int)$_SESSION['aluno_id'], $vagaId);
-        if (!empty($res['id'])) {
-            $mensagem = 'Candidatura enviada com sucesso!';
-        } else {
-            $erro = $res['erro'] ?? 'Erro ao enviar candidatura.';
+        // Bug 6: captura exceção de duplicata separadamente para exibir
+        // mensagem amigável em vez de propagar o erro como crash
+        try {
+            $res = $api->candidatar((int)$_SESSION['aluno_id'], $vagaId);
+            if (!empty($res['id'])) {
+                $mensagem = 'Candidatura enviada com sucesso!';
+            } else {
+                $erro = $res['erro'] ?? 'Erro ao enviar candidatura.';
+            }
+        } catch (RuntimeException $e) {
+            $msg = $e->getMessage();
+            if (stripos($msg, 'ja se candidatou') !== false || stripos($msg, 'HTTP 409') !== false) {
+                $erro = 'Voce ja se candidatou a esta vaga.';
+            } else {
+                $erro = 'Erro ao enviar candidatura: ' . $msg;
+            }
         }
     }
 } catch (RuntimeException $e) {

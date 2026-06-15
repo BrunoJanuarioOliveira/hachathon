@@ -14,7 +14,7 @@ public class EmpresaPanel extends JPanel {
 
     private final EmpresaDAO dao = new EmpresaDAO();
     private final DefaultTableModel modelo = new DefaultTableModel(
-        new String[]{"ID", "Nome", "CNPJ", "Email", "Telefone", "Status"}, 0) {
+        new String[]{"ID", "Nome", "CNPJ", "Email", "Status"}, 0) {
         @Override public boolean isCellEditable(int r, int c) { return false; }
     };
     private final JTable tabela = new JTable(modelo);
@@ -42,9 +42,7 @@ public class EmpresaPanel extends JPanel {
             JTextField nome     = new JTextField();
             JTextField cnpj    = new JTextField();
             JTextField email   = new JTextField();
-            JTextField tel     = new JTextField();
-            JCheckBox  aprov   = new JCheckBox("Aprovada", true);
-            Object[] campos = {"Nome:", nome, "CNPJ:", cnpj, "E-mail:", email, "Telefone:", tel, aprov};
+            Object[] campos = {"Nome:", nome, "CNPJ:", cnpj, "E-mail:", email};
             int res = JOptionPane.showConfirmDialog(this, campos, "Nova Empresa", JOptionPane.OK_CANCEL_OPTION);
             if (res != JOptionPane.OK_OPTION) return;
             if (nome.getText().isBlank()) {
@@ -53,7 +51,7 @@ public class EmpresaPanel extends JPanel {
             }
             try {
                 dao.salvar(new Empresa(0, nome.getText().trim(), cnpj.getText().trim(),
-                    email.getText().trim(), tel.getText().trim(), aprov.isSelected()));
+                    email.getText().trim(), "pendente"));
                 carregarDados();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -64,14 +62,21 @@ public class EmpresaPanel extends JPanel {
             int row = tabela.getSelectedRow();
             if (row < 0) { JOptionPane.showMessageDialog(this, "Selecione uma empresa."); return; }
             int id      = (int) modelo.getValueAt(row, 0);
-            String stat = (String) modelo.getValueAt(row, 5);
-            boolean novoStatus = stat.equals("BLOQUEADA");
-            String acao = novoStatus ? "aprovar" : "bloquear";
+            String currentStatus = (String) modelo.getValueAt(row, 4);
+            String newStatus;
+            
+            if (currentStatus.equals("APROVADA")) {
+                newStatus = "bloqueada";
+            } else {
+                newStatus = "aprovada";
+            }
+            
+            String acao = newStatus.equals("aprovada") ? "aprovar" : "bloquear";
             int conf = JOptionPane.showConfirmDialog(this, "Deseja " + acao + " esta empresa?",
                 "Confirmar", JOptionPane.YES_NO_OPTION);
             if (conf != JOptionPane.YES_OPTION) return;
             try {
-                dao.alterarAprovada(id, novoStatus);
+                dao.alterarStatus(id, newStatus);
                 carregarDados();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -100,7 +105,7 @@ public class EmpresaPanel extends JPanel {
             for (Empresa emp : dao.listarTodas()) {
                 modelo.addRow(new Object[]{
                     emp.getId(), emp.getNome(), emp.getCnpj(), emp.getEmail(),
-                    emp.getTelefone(), emp.isAprovada() ? "APROVADA" : "BLOQUEADA"
+                    emp.getStatus().toUpperCase()
                 });
             }
         } catch (Exception ex) {

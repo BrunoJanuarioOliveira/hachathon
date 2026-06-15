@@ -1,0 +1,15 @@
+br\unialfa\backoffice\dao\AlunoDAO.class
+br\unialfa\backoffice\gui\AlunoPanel.class
+br\unialfa\backoffice\gui\AlunoPanel$1.class
+br\unialfa\backoffice\model\Aluno.class
+br\unialfa\backoffice\model\Vaga.class
+br\unialfa\backoffice\dao\CandidaturaDAO.class
+br\unialfa\backoffice\model\Empresa.class
+br\unialfa\backoffice\util\ConexaoBD.class
+br\unialfa\backoffice\util\RelatorioUtil.class
+br\unialfa\backoffice\dao\EmpresaDAO.class
+br\unialfa\backoffice\model\Candidatura.class
+br\unialfa\backoffice\gui\EmpresaPanel$1.class
+br\unialfa\backoffice\gui\MainFrame.class
+br\unialfa\backoffice\gui\EmpresaPanel.class
+br\unialfa\backoffice\dao\VagaDAO.class

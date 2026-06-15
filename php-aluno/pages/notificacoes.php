@@ -7,7 +7,7 @@ if (empty($_SESSION['aluno_id'])) {
 
 require_once __DIR__ . '/../classes/ApiClient.php';
 
-$api = new ApiClient('localhost/hachathon-fixed/php-aluno/api.php');
+$api = new ApiClient();
 $erro = '';
 $notifs = [];
 
@@ -60,7 +60,7 @@ try {
             <?php foreach ($notifs as $n): ?>
                 <div class="card">
                     <p><?php echo htmlspecialchars($n['mensagem']); ?></p>
-                    <p><strong>Status:</strong> <?php echo $n['lida'] ? 'Enviada' : 'Respondida'; ?></p>
+                    <p><strong>Status:</strong> <?php echo $n['lida'] ? 'Lida' : 'Nao lida'; ?></p>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>

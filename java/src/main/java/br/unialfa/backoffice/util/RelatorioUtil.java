@@ -44,7 +44,7 @@ public class RelatorioUtil {
             for (Empresa e : lista) {
                 pw.printf("%-5d %-30s %-18s %s%n",
                     e.getId(), e.getNome(), e.getCnpj(),
-                    e.isAprovada() ? "APROVADA" : "BLOQUEADA");
+                    e.getStatus().toUpperCase());
             }
             pw.println("-".repeat(65));
             pw.println("Total: " + lista.size() + " empresa(s)");

@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = 'Preencha o RA para entrar.';
     } else {
         try {
-            $api = new ApiClient('localhost/hachathon-fixed/php-aluno/api.php');
+            $api = new ApiClient();
             $dados = $api->getAlunoPorRa($ra);
 
             if (!empty($dados)) {

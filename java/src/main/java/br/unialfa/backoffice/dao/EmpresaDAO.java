@@ -11,7 +11,7 @@ public class EmpresaDAO {
 
     public List<Empresa> listarTodas() throws SQLException {
         List<Empresa> lista = new ArrayList<>();
-        String sql = "SELECT id, nome, cnpj, email, telefone, aprovada FROM empresas ORDER BY nome";
+        String sql = "SELECT id, nome, cnpj, email, status FROM empresas ORDER BY nome";
         try (Connection con = ConexaoBD.getConnection();
              Statement st  = con.createStatement();
              ResultSet rs  = st.executeQuery(sql)) {
@@ -21,8 +21,7 @@ public class EmpresaDAO {
                     rs.getString("nome"),
                     rs.getString("cnpj"),
                     rs.getString("email"),
-                    rs.getString("telefone"),
-                    rs.getBoolean("aprovada")
+                    rs.getString("status")
                 ));
             }
         }
@@ -30,23 +29,22 @@ public class EmpresaDAO {
     }
 
     public void salvar(Empresa e) throws SQLException {
-        String sql = "INSERT INTO empresas (nome, cnpj, email, telefone, aprovada) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO empresas (nome, cnpj, email, status) VALUES (?,?,?,?)";
         try (Connection con = ConexaoBD.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, e.getNome());
             ps.setString(2, e.getCnpj());
             ps.setString(3, e.getEmail());
-            ps.setString(4, e.getTelefone());
-            ps.setBoolean(5, e.isAprovada());
+            ps.setString(4, e.getStatus());
             ps.executeUpdate();
         }
     }
 
-    public void alterarAprovada(int id, boolean aprovada) throws SQLException {
-        String sql = "UPDATE empresas SET aprovada=? WHERE id=?";
+    public void alterarStatus(int id, String status) throws SQLException {
+        String sql = "UPDATE empresas SET status=? WHERE id=?";
         try (Connection con = ConexaoBD.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setBoolean(1, aprovada);
+            ps.setString(1, status);
             ps.setInt(2, id);
             ps.executeUpdate();
         }

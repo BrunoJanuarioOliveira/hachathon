@@ -8,7 +8,7 @@ if (empty($_SESSION['aluno_id'])) {
 require_once __DIR__ . '/../classes/ApiClient.php';
 require_once __DIR__ . '/../classes/Candidatura.php';
 
-$api = new ApiClient('localhost/hachathon-fixed/php-aluno/api.php');
+$api = new ApiClient();
 $erro = '';
 $candidaturas = [];
 

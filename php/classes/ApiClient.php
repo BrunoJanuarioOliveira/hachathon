@@ -12,8 +12,24 @@ class ApiClient {
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $m);
         if (!empty($d) && in_array($m, ['POST','PUT','PATCH']))
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($d));
-        $resp = curl_exec($ch); curl_close($ch);
-        return json_decode($resp, true) ?? [];
+        $resp = curl_exec($ch);
+        // Bug 9: verificar erro de conexão antes de fechar o handle
+        if ($resp === false) {
+            $curlErro = curl_error($ch);
+            curl_close($ch);
+            throw new RuntimeException('Erro de conexao cURL: ' . $curlErro);
+        }
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        $json = json_decode($resp, true);
+        if ($json === null && json_last_error() !== JSON_ERROR_NONE) {
+            throw new RuntimeException('Resposta invalida da API: ' . json_last_error_msg());
+        }
+        if ($httpCode >= 400) {
+            $erroMsg = $json['erro'] ?? ('HTTP ' . $httpCode);
+            throw new RuntimeException('Erro HTTP na API: ' . $erroMsg);
+        }
+        return $json ?? [];
     }
 
     public function getEmpresaPorEmail(string $e): array   { return $this->req('GET', '/empresas?email=' . urlencode($e)); }
